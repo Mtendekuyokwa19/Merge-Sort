@@ -1,43 +1,71 @@
-#!/usr/bin/node
-function fibs(numberOftimesTorun) {
-  let array = [0, 1];
-  if (numberOftimesTorun == 0) {
-    return [0];
-  } else if (numberOftimesTorun == 1) {
-    return [0, 1];
+function mergeSort(array) {
+  if (array.length === 1) {
+    return array;
   }
 
-  for (let i = 2; i < numberOftimesTorun; i++) {
-    let previousNumber = array[array.length - 1];
-    let beforePreviousNumber = array[array.length - 2];
+  let length = Math.floor(array.length / 2);
 
-    array[i] = previousNumber + beforePreviousNumber;
-  }
+  let leftArray = copy(array, 0, length);
+  let rightArray = copy(array, length, array.length);
 
-  return array;
+  let sortedLeftArray = mergeSort(leftArray);
+  let sortedRightArray = mergeSort(rightArray);
+
+  console.log("=>", sortedLeftArray, sortedRightArray);
+  let mergedArray = merge(sortedLeftArray, sortedRightArray);
+  return mergedArray;
 }
 
-function fibRec(numberOftimesTorun) {
-  let array = [0, 1];
+function merge(firstArray, secondArray) {
+  let newArray = [];
+  while (!(firstArray[0] === undefined || secondArray[0] === undefined)) {
+    if (firstArray[0] > secondArray[0]) {
+      newArray[newArray.length] = secondArray[0];
+      secondArray.splice(0, 1);
+    } else if (firstArray[0] === secondArray[0]) {
+      newArray[newArray.length] = secondArray[0];
+      newArray[newArray.length] = firstArray[0];
+      firstArray.splice(0, 1);
+      secondArray.splice(0, 1);
+    } else {
+      newArray[newArray.length] = firstArray[0];
 
-  if (numberOftimesTorun == 0) {
-    return [0];
-  } else if (numberOftimesTorun == 1) {
-    return [0, 1];
-  }
-  function fibRecurcsion(numberOftimesTorun) {
-    if (numberOftimesTorun == 0) {
-      return;
+      firstArray.splice(0, 1);
     }
-
-    array[array.length] = array[array.length - 1] + array[array.length - 2];
-
-    return fibRecurcsion(numberOftimesTorun - 1);
   }
-  numberOftimesTorun = numberOftimesTorun - 2;
-  fibRecurcsion(numberOftimesTorun);
 
-  return array;
+  if (firstArray.length > 0) {
+    firstArray.forEach((element) => {
+      newArray[newArray.length] = element;
+    });
+  } else if (secondArray.length > 0) {
+    secondArray.forEach((element) => {
+      newArray[newArray.length] = element;
+    });
+  }
+
+  return newArray;
 }
 
-console.log(fibRec(8));
+function split(array) {
+  if (array.length == 1) {
+    return array;
+  }
+  let length = Math.floor(array.length / 2);
+  let leftArray = copy(array, 0, length);
+  let rightArray = copy(array, length, array.length);
+
+  return [leftArray, rightArray];
+}
+
+console.log(split([1, 2, 3, 4, 545, 6, 7]));
+
+function copy(array, start, end) {
+  let newArray = [];
+
+  for (let i = start; i < end; i++) {
+    newArray[newArray.length] = array[i];
+  }
+
+  return newArray;
+}
